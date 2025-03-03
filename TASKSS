@@ -1,0 +1,238 @@
+// 1 
+using System;
+using System.Text.RegularExpressions;
+class Program
+{
+    static void Main()
+    {
+        string[] loginsToTest = { "user1", "1user", "us", "username123", "us@er", "us3r" };
+        foreach (var login in loginsToTest)
+        {
+            if (IsValidLogin(login))
+            {
+                Console.WriteLine($"'{login}' - корректный логин");
+            }
+            else
+            {
+                Console.WriteLine($"'{login}' - некорректный логин");
+            }
+        }
+    }
+
+    static bool IsValidLogin(string login)
+    {
+        string pattern = @"^[a-zA-Z][a-zA-Z0-9]{1,9}$";
+        return Regex.IsMatch(login, pattern);
+    }
+}
+// 2
+using System;
+using System.Linq;
+
+public static class Message
+{
+    public static void PrintWordsWithMaxLength(string message, int n)
+    {
+        var words = message.Split(new[] { ' ', '.', ',', '!', '?' }, StringSplitOptions.RemoveEmptyEntries);
+        var filteredWords = words.Where(word => word.Length <= n);
+
+        Console.WriteLine("Слова, содержащие не более {0} букв:", n);
+        foreach (var word in filteredWords)
+        {
+            Console.WriteLine(word);
+        }
+    }
+    public static string RemoveWordsEndingWith(string message, char endingChar)
+    {
+        var words = message.Split(new[] { ' ', '.', ',', '!', '?' }, StringSplitOptions.RemoveEmptyEntries);
+        var filteredWords = words.Where(word => !word.EndsWith(endingChar.ToString()));
+
+        return string.Join(" ", filteredWords);
+    }
+    public static string FindLongestWord(string message)
+    {
+        var words = message.Split(new[] { ' ', '.', ',', '!', '?' }, StringSplitOptions.RemoveEmptyEntries);
+        return words.OrderByDescending(word => word.Length).FirstOrDefault() ?? string.Empty;
+    }
+}
+class Program
+{
+    static void Main()
+    {
+        string message = "сообщение для проверки работы класса Message.";
+        Message.PrintWordsWithMaxLength(message, 5);
+        
+        string modifiedMessage = Message.RemoveWordsEndingWith(message, 'е');
+        Console.WriteLine("\nСообщение после удаления слов, заканчивающихся на 'е':");
+        Console.WriteLine(modifiedMessage);
+        
+        string longestWord = Message.FindLongestWord(message);
+        Console.WriteLine("\nСамое длинное слово в сообщении:");
+        Console.WriteLine(longestWord);
+    }
+}
+// 3
+using System;
+public class Car
+{
+    private string brand;
+    private int year;
+    private int mileage;
+    public Car(string brand, int year)
+    {
+        this.brand = brand;
+        this.year = year;
+        this.mileage = 0;
+    }
+    public void Drive(int km)
+    {
+        if (km < 0)
+        {
+            Console.WriteLine("Пробег не может быть отрицательным.");
+            return;
+        }
+        mileage += km;
+        Console.WriteLine($"Автомобиль проехал {km} км. Текущий пробег: {mileage} км.");
+    }
+    public void DisplayInfo()
+    {
+        Console.WriteLine($"Марка: {brand}, Год выпуска: {year}, Пробег: {mileage} км");
+    }
+    ~Car()
+    {
+        Console.WriteLine($"Объект автомобиля {brand} уничтожен.");
+    }
+}
+class Program
+{
+    static void Main()
+    {
+        Car myCar = new Car("Toyota", 2020);
+        myCar.DisplayInfo();
+        myCar.Drive(150);
+        myCar.Drive(200);
+        myCar.DisplayInfo();
+        myCar = null;
+        GC.Collect(); 
+        GC.WaitForPendingFinalizers();
+    }
+}
+// 4
+using System;
+
+public class Student
+{
+    private string name;
+    private int age; 
+    private int grade;
+    public Student(string name, int age, int grade)
+    {
+        this.name = name;
+        this.age = age;
+        SetGrade(grade);
+    }
+    public void SetGrade(int value)
+    {
+        if (value < 1 || value > 5)
+        {
+            Console.WriteLine("Ошибка: Успеваемость должна быть от 1 до 5.");
+        }
+        else
+        {
+            grade = value;
+            Console.WriteLine($"Успеваемость для {name} успешно изменена на {grade}.");
+        }
+    }
+    public void DisplayInfo()
+    {
+        Console.WriteLine($"Имя: {name}, Возраст: {age}, Успеваемость: {grade}");
+    }
+}
+class Program
+{
+    static void Main()
+    {
+        Student student1 = new Student("Алексей", 20, 4);
+        Student student2 = new Student("Мария", 22, 5);
+        student1.DisplayInfo();
+        student2.DisplayInfo();
+        student1.SetGrade(3); 
+        student1.DisplayInfo();
+        student2.SetGrade(6);
+        student2.DisplayInfo();
+        student2.SetGrade(2);
+        student2.DisplayInfo();
+    }
+}
+// 5 
+using System;
+class Program
+{
+    static void Main()
+    {
+        DateTime startTime = DateTime.Now;
+        long goodNumbersCount = 0;
+        for (long i = 1; i <= 1000000000; i++)
+        {
+            if (IsGoodNumber(i))
+            {
+                goodNumbersCount++;
+            }
+        }
+        DateTime endTime = DateTime.Now;
+        TimeSpan duration = endTime - startTime;
+        Console.WriteLine($"Количество хороших чисел: {goodNumbersCount}");
+        Console.WriteLine($"Время выполнения: {duration.TotalSeconds} секунд");
+    }
+    static bool IsGoodNumber(long number)
+    {
+        long sumOfDigits = SumOfDigits(number);
+        return sumOfDigits != 0 && number % sumOfDigits == 0;
+    }
+    static long SumOfDigits(long number)
+    {
+        long sum = 0;
+        while (number > 0)
+        {
+            sum += number % 10;
+            number /= 10;
+        }
+        return sum;
+    }
+}
+// 6 using System;
+class Program
+{
+    static void Main()
+    {
+        long number = 87346;
+        int digitCount = CountDigits(number);
+        Console.WriteLine($"Количество цифр в числе {number}: {digitCount}");
+    }
+    static int CountDigits(long number)
+    {
+        if (number < 0)
+        {
+            number = -number;
+        }
+        return number.ToString().Length;
+    }
+}
+// 7 
+using System;
+class Program
+{
+    static void Main()
+    {
+        Console.WriteLine("  a |     x |   a * sin(x)");
+        Console.WriteLine("---------------------------");
+        for (int i = 1; i <= 10; i++)
+        {
+            double a = i;
+            double x = i;
+            double result = a * Math.Sin(x);
+            Console.WriteLine($"{i,3} | {x,5} | {result,12:F6}");
+        }
+    }
+}
+
